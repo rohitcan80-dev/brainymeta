@@ -2,9 +2,10 @@ name = "brainy-bees-registration"
 main = "workers/registration.js"
 compatibility_date = "2024-01-01"
 
-# KV Namespace for storing registrations
-# Create with: wrangler kv:namespace create "REGISTRATIONS"
-# Then replace the id below with the output id
+# KV Namespace for storing form submissions
+# This is the SAME namespace used by the old camp registration form —
+# reusing it keeps all prior data and avoids creating a duplicate resource.
+# If you ever need to recreate it: wrangler kv:namespace create "REGISTRATIONS"
 [[kv_namespaces]]
 binding = "REGISTRATIONS"
 id = "YOUR_KV_NAMESPACE_ID_HERE"
@@ -17,7 +18,7 @@ ENVIRONMENT = "production"
 [site]
 bucket = "./dist"
 
-# Routes - worker handles /api/* paths
+# Routes - worker handles /api/* paths on the CORRECT domain (brainybee.ca)
 [[routes]]
-pattern = "brainybeescamp.ca/api/*"
-zone_name = "brainybeescamp.ca"
+pattern = "brainybee.ca/api/*"
+zone_name = "brainybee.ca"

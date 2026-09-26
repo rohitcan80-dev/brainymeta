@@ -1,42 +1,31 @@
-name: Deploy Brainy Bees to Cloudflare Pages
+name: Deploy Brainy Bee's STEM to Cloudflare
 
 on:
   push:
-    branches: [main]
-  pull_request:
     branches: [main]
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    name: Deploy to Cloudflare Pages
+    name: Deploy site + Worker to Cloudflare
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-          cache: 'npm'
-
-      - name: Install dependencies
-        run: npm ci
-
-      - name: Build project
-        run: npm run build
-        env:
-          VITE_WORKER_URL: ${{ secrets.VITE_WORKER_URL }}
-
-      - name: Deploy to Cloudflare Pages
+      - name: Deploy static site to Cloudflare Pages
         uses: cloudflare/pages-action@v1
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           projectName: brainy-bees
-          directory: dist
+          directory: .
           gitHubToken: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
 
       - name: Deploy Worker
         run: npx wrangler deploy workers/registration.js
